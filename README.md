@@ -1,9 +1,16 @@
 Attention that:
+
 iVentoy and Ventoy are two completely different softwares.
+
 Ventoy is 100% open source.
+
 iVentoy is not fully open source.
+
 This repo only contains the open source part of iVentoy.
+
 So you should decide to use it or not.
+
+
 
 
 When install Windows, iVentoy will load httpdisk.sys in the WinPE environment.
