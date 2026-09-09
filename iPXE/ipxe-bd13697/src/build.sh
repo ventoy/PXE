@@ -2,7 +2,7 @@
 
 LOADERDIR=../../../TARFS/data/loader
 
-if echo $* | grep -P -q '(bios|uefi|ia32|arm64)'; then
+if echo $* | grep -P -q '(bios|uefi|ia32|arm64|riscv64)'; then
 
     if [ "$1" == "bios" ]; then
         rm -f bin-x86_64-pcbios/undionly.kpxe
@@ -36,7 +36,7 @@ if echo $* | grep -P -q '(bios|uefi|ia32|arm64)'; then
             rm -rf bin-i386-efi
             rm -f ./ipxe.ia32.${bdname}.efi.0  
             
-            make -j16 -e bin-i386-efi/${bdname}.efi  BIOS_MODE=UEFI  BIOS_MODE=UEFI TOY_ARCH=IA32 CPU_TYPE=3
+            make -j16 -e bin-i386-efi/${bdname}.efi  BIOS_MODE=UEFI  TOY_ARCH=IA32 CPU_TYPE=3
             
             if [ -e bin-i386-efi/${bdname}.efi ]; then    
                 mv bin-i386-efi/${bdname}.efi ./ipxe.ia32.${bdname}.efi.0
@@ -56,9 +56,21 @@ if echo $* | grep -P -q '(bios|uefi|ia32|arm64)'; then
                 /bin/cp -a ./ipxe.arm64.${bdname}.efi.0  $LOADERDIR/
             fi
         done
+
+    elif [ "$1" == "riscv64" ]; then
+        for bdname in snponly snp ipxe; do
+            rm -rf bin-riscv64-efi
+            rm -f ./ipxe.riscv64.${bdname}.efi.0  
+            
+            make -j16 -e bin-riscv64-efi/${bdname}.efi CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv BIOS_MODE=UEFI TOY_ARCH=RISCV64 CPU_TYPE=5
+            
+            if [ -e bin-riscv64-efi/${bdname}.efi ]; then    
+                mv bin-riscv64-efi/${bdname}.efi ./ipxe.riscv64.${bdname}.efi.0 
+                /bin/cp -a ./ipxe.riscv64.${bdname}.efi.0 $LOADERDIR/
+            fi
+        done
     fi
 else
-    echo "Usage: build.sh { bios | uefi | ia32 | arm64 }"
+    echo "Usage: build.sh { bios | uefi | ia32 | arm64 | riscv64 }"
     exit 0
 fi
-
